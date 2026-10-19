@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sofea & Kyra – Birthday Payment Calendar</title>
+<style>
+:root{--bg:#f7f9fc;--surface:#fff;--text:#232a33;--muted:#6b7684;--line:#e1e7ef;--green:#1b8a3c;--greenbg:#e2f5e8;--red:#d62828;--redbg:#fde8e8;--sf:#d62828;--sfbg:#fff0cc;--ky:#0a74b9;--kybg:#dff1fc;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#13181f;--surface:#1c232d;--text:#eef2f7;--muted:#9aa7b8;--line:#2f3a48;--green:#5fd37e;--greenbg:#1f3d29;--red:#ff6b6b;--redbg:#4a2323;--sf:#ff8a8a;--sfbg:#4d3a14;--ky:#6cc4f5;--kybg:#14384f}}
+:root[data-theme="dark"]{--bg:#13181f;--surface:#1c232d;--text:#eef2f7;--muted:#9aa7b8;--line:#2f3a48;--green:#5fd37e;--greenbg:#1f3d29;--red:#ff6b6b;--redbg:#4a2323;--sf:#ff8a8a;--sfbg:#4d3a14;--ky:#6cc4f5;--kybg:#14384f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+.ttl{margin:0 0 10px;font-size:1.2rem}
+.hd{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.hb{border-radius:16px;padding:14px 16px;color:#fff}
+.hb.s{background:#d62828;border-bottom:6px solid #ffc72c}
+.hb.k{background:linear-gradient(135deg,#0a74b9,#12a4c9);border-bottom:6px solid #8fe0f5}
+.hb h2{margin:0;font-size:1.1rem}
+.hb p{margin:4px 0 0;font-size:.85rem}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;border-top:5px solid var(--line)}
+.card.s{border-top-color:var(--sf)}.card.k{border-top-color:var(--ky)}.card.g{border-top-color:var(--text)}
+.card h3{margin:0 0 6px;font-size:.9rem}
+.card div{display:flex;justify-content:space-between;font-size:.82rem}
+.card .pd{color:var(--green)}.card .du{color:var(--red)}.card .tt{font-weight:700;border-top:1px solid var(--line);margin-top:4px;padding-top:4px}
+h2{font-size:1.05rem;margin:20px 0 8px}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+input,select,button{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);min-width:0}
+button{cursor:pointer;background:var(--ky);color:#fff;border:0;font-weight:600}
+button.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);font-weight:400;padding:4px 8px;font-size:.8rem}
+button.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.scroll{overflow-x:auto}
+.cal{min-width:660px;display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.dow{font-size:.75rem;text-align:center;color:var(--muted);font-weight:600}
+.day{min-height:84px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px;font-size:.72rem}
+.day.empty{background:transparent;border:0}
+.day .n{font-weight:700;font-size:.8rem}
+.day.ps{background:var(--sfbg);border-color:var(--sf)}
+.day.pk{background:var(--kybg);border-color:var(--ky)}
+.day.today{outline:2px solid var(--text)}
+.ev{display:block;font-weight:700;margin-top:2px}
+.chip{display:block;border-radius:5px;padding:2px 4px;margin-top:3px;font-weight:600;word-break:break-word;border-left:5px solid}
+.chip.s{background:var(--sfbg);color:var(--text);border-color:var(--sf)}
+.chip.k{background:var(--kybg);color:var(--text);border-color:var(--ky)}
+.chip .l{font-weight:800}.chip.p .l{color:var(--green)}.chip.d .l{color:var(--red)}
+.chip.p{opacity:.78}
+table{width:100%;min-width:1250px;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.85rem}
+th,td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--line)}
+td.rc{min-width:120px;white-space:nowrap}
+table th:nth-child(3),#rows td:nth-child(3){min-width:240px}
+#rows td:nth-child(1),#rows td:nth-child(2),#rows td:nth-child(4),#rows td:nth-child(5),#rows td:nth-child(6),#rows td:nth-child(7),th{white-space:nowrap}
+td.rc .ghost{margin-left:8px;padding:2px 6px;font-size:.7rem}
+.pdf{display:inline-block;padding:8px 10px;border:1px solid var(--line);border-radius:6px;cursor:pointer;font-size:.8rem;font-weight:600}
+.fi{grid-column:span 2;display:flex;align-items:center;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--muted);cursor:pointer;overflow:hidden;white-space:nowrap}
+.fi span{overflow:hidden;text-overflow:ellipsis}
+.act{white-space:nowrap}
+.dz{outline:2px dashed var(--ky);outline-offset:-2px;background:var(--kybg)}
+.hint{display:inline-block;color:var(--muted);font-size:.75rem;border:1px dashed var(--line);border-radius:6px;padding:8px 10px;cursor:pointer}
+td.act,th.act{position:sticky;right:0;background:var(--surface);box-shadow:-6px 0 8px -6px rgba(0,0,0,.25);padding:12px 8px}
+th.act{background:var(--bg)}
+.act .ghost{padding:3px 7px;font-size:.72rem;margin:0 1px}
+.act .ed{color:var(--ky);border-color:var(--ky);font-weight:600}
+th{background:var(--bg);font-size:.75rem;text-transform:uppercase}
+.tag{padding:2px 8px;border-radius:99px;font-weight:700;font-size:.72rem}
+.tag.p{background:var(--greenbg);color:var(--green)}.tag.d{background:var(--redbg);color:var(--red)}
+.pt{font-weight:700}.pt.s{color:var(--sf)}.pt.k{color:var(--ky)}
+.note{color:var(--muted);font-size:.8rem}
+.th{width:64px;height:64px;object-fit:cover;border-radius:6px;cursor:pointer;vertical-align:middle;border:1px solid var(--line)}
+.nt{min-width:330px;max-width:480px;white-space:pre-wrap}
+.bar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+@media print{form,.act,.noprint{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1 class="ttl">🎂 Birthday Payment Calendar</h1>
+<header class="hd">
+<div class="hb s"><h2>🍟 Sofea's 6th Birthday</h2><p>Sat 14 Nov 2026 · SuperPark Malaysia, Avenue K<br>Theme: McDonald's</p></div>
+<div class="hb k"><h2>🌊 Kyra's 9th Birthday</h2><p>5 or 6 Dec 2026 (TBC) · Rollerwa, 1 Utama<br>Theme: Blue ocean</p></div>
+</header>
+
+<div class="sum" id="sum"></div>
+
+<h2 class="noprint" id="ft">Add a payment</h2>
+<form id="f" class="noprint">
+<select id="pty"><option value="s">Sofea's party</option><option value="k">Kyra's party</option></select>
+<input id="item" placeholder="Item / vendor" required>
+<input id="bud" type="number" min="0" step="0.01" placeholder="Budgeted amount (RM)">
+<input id="amt" type="text" inputmode="decimal" placeholder="Actual amount (RM) or TBC" required>
+<select id="st"><option value="d">To pay (due date)</option><option value="p">Paid (paid date)</option></select>
+<input id="dt" type="date" required>
+<select id="who"><option value="">Paid by (select)</option><option>Mien Dee</option><option>Ken</option><option>Eileen</option><option>Amy</option></select>
+<textarea id="note" rows="3" placeholder="Note / remark (order details) – you can paste bullet points, one per line" style="grid-column:span 2;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);resize:vertical"></textarea>
+<label class="fi" title="Attach a receipt: image (JPG/PNG) or PDF – click, or drag a file here"><span id="rcn">Receipt (image / PDF)</span><input id="rcp" type="file" accept="image/*,application/pdf" hidden></label>
+<button type="submit" id="sb">Add payment</button>
+<button type="button" class="ghost" id="cx" style="display:none">Cancel edit</button>
+</form>
+
+<div class="bar noprint">
+<button class="ghost on" data-f="a">All</button><button class="ghost" data-f="s">Sofea only</button><button class="ghost" data-f="k">Kyra only</button>
+</div>
+
+<h2>September 2026</h2><div class="scroll"><div class="cal" id="c8"></div></div>
+<h2>October 2026</h2><div class="scroll"><div class="cal" id="c9"></div></div>
+<h2>November 2026</h2><div class="scroll"><div class="cal" id="c10"></div></div>
+<h2>December 2026</h2><div class="scroll"><div class="cal" id="c11"></div></div>
+
+<h2>All payments</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>Date</th><th>Party</th><th>Item</th><th>Budget</th><th>Amount</th><th>Status</th><th>By</th><th>Note / Remark</th><th>Receipt</th><th class="act"></th></tr></thead>
+<tbody id="rows"></tbody>
+</table>
+</div>
+<p class="note noprint">Rows marked "Sample" are examples only. Edits are saved in your own browser only – to share, press Print / Save PDF or screenshot.</p>
+<p class="noprint"><button class="ghost" id="clr">Clear samples</button> <button class="ghost" id="prn">Print / Save PDF</button></p>
+</div>
+
+<div id="tst" style="display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:#222;color:#fff;padding:10px 16px;border-radius:10px;z-index:60;max-width:90%;font-size:.85rem;text-align:center"></div>
+<div id="lb" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;flex-direction:column;align-items:center;padding:12px;gap:8px"><div style="display:flex;gap:12px;align-items:center"><a id="lbo" style="display:none"></a><button type="button" id="lbx" class="ghost" style="color:#fff;border-color:#fff">Close ✕</button></div><img id="lbi" alt="Receipt" style="max-width:100%;max-height:calc(100% - 50px);border-radius:8px;display:none"><div id="lbp" style="display:none;overflow:auto;width:100%;max-width:900px;flex:1"></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+var KEY="birthday-payments-v2",OLD="sofea-party-payments-v1",flt="a";
+var data=[
+{id:1,p:"s",item:"Sample – SuperPark deposit",amt:500,st:"p",dt:"2026-10-05",who:"",sample:1},
+{id:2,p:"s",item:"Sample – SuperPark balance",amt:800,st:"d",dt:"2026-11-07",who:"",sample:1},
+{id:3,p:"k",item:"Sample – Rollerwa deposit",amt:300,st:"d",dt:"2026-10-30",who:"",sample:1},
+{id:4,p:"k",item:"Sample – Rollerwa balance",amt:900,st:"d",dt:"2026-11-28",who:"",sample:1}
+];
+try{
+ var s=localStorage.getItem(KEY),o=localStorage.getItem(OLD);
+ if(s){var j=JSON.parse(s);if(Array.isArray(j))data=j;}
+ else if(o){var k=JSON.parse(o);if(Array.isArray(k)){var real=k.filter(function(x){return !x.sample;});if(real.length){real.forEach(function(x){x.p="s";});data=real.concat(data.filter(function(x){return x.p==="k";}));}}}
+}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){toast("Could not save in this browser – storage may be full or blocked. Try removing some receipts.");}}
+function rm(n){return "RM "+Number(n).toLocaleString("en-MY",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function esc(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML;}
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+var today=iso(new Date());
+function label(p){return p.st==="p"?"✓ PAID":(p.dt<today?"OVERDUE":"DUE");}
+function fmt(d){return new Date(d+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});}
+var NAME={s:"Sofea",k:"Kyra"};
+var EV={"2026-11-14":["s","🎉 Sofea's party"],"2026-12-05":["k","🌊 Kyra's party? (TBC)"],"2026-12-06":["k","🌊 Kyra's party? (TBC)"]};
+function cal(el,m){
+ var h="";["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(function(d){h+='<div class="dow">'+d+'</div>';});
+ var off=(new Date(2026,m,1).getDay()+6)%7,days=new Date(2026,m+1,0).getDate();
+ for(var i=0;i<off;i++)h+='<div class="day empty"></div>';
+ for(var d=1;d<=days;d++){
+  var k="2026-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"),ev=EV[k];
+  var cls="day"+(ev?" p"+ev[0]:"")+(k===today?" today":"");
+  var c='<div class="n">'+d+'</div>'+(ev?'<span class="ev">'+ev[1]+'</span>':"");
+  data.filter(function(p){return onDay(p,k)&&(flt==="a"||flt===p.p);}).forEach(function(p){
+   c+='<span class="chip '+p.p+" "+p.st+'"><span class="l">'+label(p)+"</span> · "+NAME[p.p]+"<br>"+esc(p.item)+"<br>"+amtTxt(p)+'</span>';
+  });
+  h+='<div class="'+cls+'">'+c+'</div>';
+ }
+ el.innerHTML=h;
+}
+function tot(f){var a=0,b=0;data.forEach(function(p){if(f&&p.p!==f)return;if(p.amt==="TBC")return;if(p.st==="p")a+=+p.amt;else b+=+p.amt;});return [a,b];}
+function card(c,t,f){var x=tot(f);return '<div class="card '+c+'"><h3>'+t+'</h3><div class="pd"><span>Paid</span><span>'+rm(x[0])+'</span></div><div class="du"><span>To pay</span><span>'+rm(x[1])+'</span></div>'+(tbcN(f)?'<div class="du"><span>Amount TBC</span><span>'+tbcN(f)+' item(s)</span></div>':"")+'<div class="tt"><span>Total</span><span>'+rm(x[0]+x[1])+'</span></div></div>';}
+function render(){
+ data.sort(function(a,b){return a.dt<b.dt?-1:1;});
+ document.getElementById("sum").innerHTML=card("s","🍟 Sofea (6th)","s")+card("k","🌊 Kyra (9th)","k")+card("g","Grand total","");
+ cal(document.getElementById("c8"),8);cal(document.getElementById("c9"),9);cal(document.getElementById("c10"),10);cal(document.getElementById("c11"),11);
+ var r="";
+ data.filter(function(p){return flt==="a"||flt===p.p;}).forEach(function(p){
+  r+="<tr><td>"+(dual(p)?"5 / 6 Dec 2026":fmt(p.dt))+'</td><td><span class="pt '+p.p+'">'+NAME[p.p]+"</span></td><td>"+esc(p.item)+"</td><td>"+(p.bud!=null&&p.bud!==""?rm(p.bud):"–")+"</td><td>"+amtTxt(p)+'</td><td><span class="tag '+p.st+'">'+label(p)+"</span></td><td>"+esc(p.who||"")+'</td><td class="nt">'+fmtNote(p.note||"")+'</td><td class="rc" data-rid="'+p.id+'">'+(rcell(p))+'</td><td class="act">'+
+  '<button class="ghost ed" data-edit="'+p.id+'">Edit</button> '+(p.st==="d"?'<button class="ghost" data-pay="'+p.id+'">Mark paid</button> ':"")+'<button class="ghost" data-del="'+p.id+'">✕</button></td></tr>';
+ });
+ document.getElementById("rows").innerHTML=r||'<tr><td colspan="10">No payments yet.</td></tr>';
+}
+var editId=null;
+var tt=null;
+function toast(m){tst.textContent=m;tst.style.display="block";clearTimeout(tt);tt=setTimeout(function(){tst.style.display="none";},7000);}
+function parseAmt(v){v=String(v).trim();if(/^tbc$/i.test(v))return "TBC";var n=parseFloat(v.replace(/,/g,""));return isNaN(n)||n<0?null:n;}
+function amtTxt(p){return p.amt==="TBC"?"TBC":rm(p.amt);}
+function tbcN(f){return data.filter(function(p){return p.amt==="TBC"&&(!f||p.p===f);}).length;}
+function dual(p){return p.p==="k"&&(p.dt==="2026-12-05"||p.dt==="2026-12-06");}
+function onDay(p,k){return p.dt===k||(dual(p)&&(k==="2026-12-05"||k==="2026-12-06"));}
+function fmtNote(t){return esc(t).replace(/^(\s*)[-*]\s+/gm,"$1• ");}
+function sn(n){var i=n.lastIndexOf("."),e=i>0?n.slice(i):"",b=i>0?n.slice(0,i):n;return b.length>10?b.slice(0,8)+"…"+e:n;}
+function rcell(p){
+ if(!p.rc)return '<span class="hint" title="Add a receipt: image or PDF (click, or drag a file here)" data-up="'+p.id+'">+ add / drop file</span>';
+ var rb='<button class="ghost" data-rmrc="'+p.id+'" title="Remove receipt">remove</button>';
+ if(p.rc.indexOf("data:application/pdf")===0)return '<span class="pdf" title="PDF receipt – click to view" data-view="'+p.id+'">📄 PDF</span>'+rb;
+ return '<img class="th" title="Image receipt – click to view" data-view="'+p.id+'" src="'+p.rc+'" alt="Receipt">'+rb;
+}
+function shrink(file,cb){
+ if(!file){cb(null);return;}
+ if(file.type==="application/pdf"){if(file.size>1500000){toast("This PDF is too large (max about 1.5 MB). Please use a smaller file or a screenshot.");cb(null);return;}var pr=new FileReader();pr.onerror=function(){cb(null);};pr.onload=function(){cb(pr.result);};pr.readAsDataURL(file);return;}
+ var r=new FileReader();
+ r.onerror=function(){cb(null);};
+ r.onload=function(){var im=new Image();
+  im.onerror=function(){if(file.size<=1200000){toast("Couldn't compress that image – saved it as-is.");cb(r.result);}else{toast("Couldn't read that image. Please try a JPG/PNG screenshot instead.");cb(null);}};
+  im.onload=function(){var s=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);cb(c.toDataURL("image/jpeg",0.7));};
+  im.src=r.result;};
+ r.readAsDataURL(file);
+}
+document.getElementById("rows").addEventListener("click",function(e){var v=e.target.dataset&&e.target.dataset.view;if(!v)return;var p=data.filter(function(x){return x.id==v;})[0];if(p&&p.rc)openRc(p.rc);});
+function showPdf(arr){
+ if(!arr||!window.pdfjsLib){lbp.innerHTML='<p style="color:#fff">Sorry, this PDF could not be displayed here.</p>';return;}
+ lbp.innerHTML='<p style="color:#fff">Loading PDF…</p>';
+ try{pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";}catch(e){}
+ pdfjsLib.getDocument({data:arr}).promise.then(function(pdf){
+  lbp.innerHTML="";var n=Math.min(pdf.numPages,15),w=Math.min(900,window.innerWidth-24),chain=Promise.resolve();
+  for(let i=1;i<=n;i++){chain=chain.then(function(){return pdf.getPage(i).then(function(pg){var v0=pg.getViewport({scale:1}),sc=w/v0.width,v=pg.getViewport({scale:sc*(window.devicePixelRatio||1)}),c=document.createElement("canvas");c.width=v.width;c.height=v.height;c.style.cssText="width:"+w+"px;display:block;margin:0 auto 8px;background:#fff;border-radius:6px";lbp.appendChild(c);return pg.render({canvasContext:c.getContext("2d"),viewport:v}).promise;});});}
+ }).catch(function(){lbp.innerHTML='<p style="color:#fff">Sorry, this PDF could not be displayed here.</p>';});
+}
+function openRc(u){
+ var pdf=u.indexOf("data:application/pdf")===0,src=u,pdfData=null;
+ if(pdf){try{var bs=atob(u.split(",")[1]),ar=new Uint8Array(bs.length);for(var i=0;i<bs.length;i++)ar[i]=bs.charCodeAt(i);pdfData=ar;}catch(e){}}
+ lbi.style.display=pdf?"none":"block";lbp.style.display=pdf?"block":"none";lbo.style.display=pdf?"none":"";
+ lbp.innerHTML="";
+ if(pdf){showPdf(pdfData);}else{lbi.src=src;lbo.href=src;}
+ lb.style.display="flex";
+ try{history.pushState({rc:1},"");pushed=true;}catch(e){pushed=false;}
+}
+var pushed=false;
+function hideRc(){lb.style.display="none";lbp.innerHTML="";}
+function closeRc(){if(pushed){pushed=false;try{history.back();return;}catch(e){}}hideRc();}
+window.addEventListener("popstate",function(){pushed=false;hideRc();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&lb.style.display==="flex")closeRc();});
+lbx.onclick=closeRc;
+lb.onclick=function(e){if(e.target===lb)closeRc();};
+var dropF=null,rowId=null;
+function okFile(f){return f&&(f.type==="application/pdf"||f.type.indexOf("image/")===0);}
+function attach(id,f){if(!okFile(f)){toast("Please use an image or PDF file.");return;}shrink(f,function(rc){if(!rc)return;data.forEach(function(x){if(x.id==id)x.rc=rc;});save();render();toast("Receipt added ✓");});}
+var rf=document.createElement("input");rf.type="file";rf.accept="image/*,application/pdf";rf.hidden=true;document.body.appendChild(rf);
+rf.onchange=function(){if(rf.files[0]&&rowId!==null)attach(rowId,rf.files[0]);rf.value="";};
+["dragover","drop"].forEach(function(t){window.addEventListener(t,function(e){var ty=e.dataTransfer&&e.dataTransfer.types;if(ty&&Array.prototype.indexOf.call(ty,"Files")>-1)e.preventDefault();});});
+var rowsEl=document.getElementById("rows");
+rowsEl.addEventListener("dragover",function(e){var c=e.target.closest&&e.target.closest("td.rc");document.querySelectorAll(".dz").forEach(function(x){if(x!==c)x.classList.remove("dz");});if(c)c.classList.add("dz");});
+rowsEl.addEventListener("dragleave",function(e){var c=e.target.closest&&e.target.closest("td.rc");if(c&&!c.contains(e.relatedTarget))c.classList.remove("dz");});
+rowsEl.addEventListener("drop",function(e){var c=e.target.closest&&e.target.closest("td.rc");if(!c)return;e.preventDefault();c.classList.remove("dz");var f=e.dataTransfer.files[0];if(f)attach(c.dataset.rid,f);else toast("That drag didn't include a file – save the picture or PDF to your device first, then drag it in.");});
+rowsEl.addEventListener("click",function(e){var u=e.target.dataset&&e.target.dataset.up;if(!u)return;rowId=u;rf.click();});
+var fiEl=document.querySelector(".fi");
+fiEl.addEventListener("dragover",function(){fiEl.classList.add("dz");});
+fiEl.addEventListener("dragleave",function(){fiEl.classList.remove("dz");});
+fiEl.addEventListener("drop",function(e){e.preventDefault();fiEl.classList.remove("dz");var f=e.dataTransfer.files[0];if(!f){toast("That drag didn't include a file – save the picture or PDF to your device first, then drag it in.");return;}if(!okFile(f)){toast("Please use an image or PDF file.");return;}dropF=f;try{rcp.files=e.dataTransfer.files;}catch(x){}rcn.textContent=sn(f.name);toast("Receipt selected – now press Add payment / Save changes to keep it.");});
+rcp.onchange=function(){rcn.textContent=rcp.files[0]?sn(rcp.files[0].name):"Receipt (image / PDF)";if(rcp.files[0])toast("Receipt selected – now press Add payment / Save changes to keep it.");};
+function resetForm(){editId=null;document.getElementById("f").reset();sb.textContent="Add payment";dropF=null;rcn.textContent="Receipt (image / PDF)";cx.style.display="none";ft.textContent="Add a payment";}
+function startEdit(id){
+ var p=data.filter(function(x){return x.id==id;})[0];if(!p)return;
+ editId=p.id;note.value=p.note||"";bud.value=(p.bud==null?"":p.bud);rcp.value="";dropF=null;rcn.textContent=p.rc?"Receipt attached (choose to replace)":"Receipt (image / PDF)";pty.value=p.p;item.value=p.item;amt.value=p.amt;st.value=p.st;dt.value=p.dt;
+ if(p.who&&!Array.prototype.some.call(who.options,function(o){return o.value===p.who;})){var o=document.createElement("option");o.textContent=p.who;who.appendChild(o);}
+ who.value=p.who||"";
+ sb.textContent="Save changes";cx.style.display="";ft.textContent="Edit payment";
+ document.getElementById("f").scrollIntoView({behavior:"smooth",block:"center"});
+}
+cx.onclick=resetForm;
+document.getElementById("f").addEventListener("submit",function(e){
+ e.preventDefault();
+ var rec={p:pty.value,item:item.value.trim(),amt:parseAmt(amt.value),st:st.value,dt:dt.value,who:who.value,note:note.value.trim(),bud:bud.value===""?null:+bud.value};
+ if(rec.amt===null){toast("Please enter the amount as a number, or type TBC.");return;}
+ var fl=(rcp.files&&rcp.files[0])||dropF;dropF=null;
+ shrink(fl,function(rc){
+ if(rc)rec.rc=rc;
+ if(editId!==null){data.forEach(function(x){if(x.id===editId){x.p=rec.p;x.item=rec.item;x.amt=rec.amt;x.st=rec.st;x.dt=rec.dt;x.who=rec.who;x.note=rec.note;x.bud=rec.bud;if(rec.rc)x.rc=rec.rc;delete x.sample;}});}
+ else{rec.id=Date.now();data.push(rec);}
+ resetForm();save();render();if(rc)toast("Receipt added ✓");
+ });
+});
+document.getElementById("rows").addEventListener("click",function(e){
+ var b=e.target.closest("button");if(!b)return;
+ if(b.dataset.rmrc){data.forEach(function(x){if(x.id==b.dataset.rmrc)delete x.rc;});save();render();return;}
+ if(b.dataset.edit){startEdit(b.dataset.edit);return;}
+ if(b.dataset.del)data=data.filter(function(p){return p.id!=b.dataset.del;});
+ if(b.dataset.pay)data.forEach(function(p){if(p.id==b.dataset.pay){p.st="p";p.dt=today;}});
+ save();render();
+});
+document.querySelector(".bar").addEventListener("click",function(e){
+ var b=e.target.closest("button");if(!b)return;flt=b.dataset.f;
+ document.querySelectorAll(".bar button").forEach(function(x){x.classList.toggle("on",x===b);});render();
+});
+document.getElementById("clr").onclick=function(){data=data.filter(function(p){return !p.sample;});save();render();};
+document.getElementById("prn").onclick=function(){window.print();};
+render();
+</script>
+</body>
+</html>
